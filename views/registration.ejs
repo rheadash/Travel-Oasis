@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Registration</title>
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="./css/main.css" />
+		<script type="text/javascript">
+			$(document).ready(() => {
+				$('#form').submit((event) => {
+					event.preventDefault()
+
+					$.ajax({
+						type: 'POST',
+						url: '/',
+						data: $('#form').serialize(),
+						dataType: 'text',
+						success: (response) => {
+							$('#form')[0].reset()
+							document.getElementById('check').textContent = response
+
+							setTimeout(() => {
+								document.getElementById('check').textContent = ''
+							}, 3000)
+						},
+						error: () => {},
+					})
+				})
+			})
+		</script>
+	</head>
+
+	<body>
+		<div class="col-md-4 col-md-offset-4">
+			<div>
+				<h2>Registration</h2>
+			</div>
+
+			<div class="form-group">
+				<form id="registration" method="post">
+					<input
+						type="email"
+						name="email"
+						placeholder="E-mail"
+						required=""
+						class="form-control"
+					/><br />
+					<input
+						type="text"
+						name="name"
+						placeholder="Name"
+						required=""
+						class="form-control"
+					/><br />
+					<input
+						type="password"
+						name="password"
+						placeholder="Password"
+						required=""
+						class="form-control"
+					/><br />
+					<input
+						type="password"
+						name="passwordConf"
+						placeholder="Confirm Password"
+						required=""
+						class="form-control"
+					/><br />
+
+					<h5>Address 1 (mandatory)</h5>
+					<input
+						type="text"
+						name="a1street"
+						placeholder="Street"
+						required=""
+						class="form-control"
+					/>
+					<input
+						type="text"
+						name="a1city"
+						placeholder="City"
+						required=""
+						class="form-control"
+					/>
+					<input
+						type="text"
+						name="a1state"
+						placeholder="State"
+						required=""
+						class="form-control"
+					/>
+					<input
+						type="text"
+						name="a1country"
+						placeholder="Country"
+						required=""
+						class="form-control"
+					/>
+					<input
+						type="number"
+						name="a1zip"
+						placeholder="ZIP"
+						required=""
+						class="form-control"
+					/>
+					<br />
+					<h5>Address 2 (optional)</h5>
+					<input
+						type="text"
+						name="a2street"
+						placeholder="Street"
+						class="form-control"
+					/>
+					<input type="text" name="a2city" placeholder="City" class="form-control" />
+					<input
+						type="text"
+						name="a2state"
+						placeholder="State"
+						class="form-control"
+					/>
+					<input
+						type="text"
+						name="a2country"
+						placeholder="Country"
+						class="form-control"
+					/>
+					<input type="number" name="a2zip" placeholder="ZIP" class="form-control" />
+					<br />
+					<p>Address 3 (optional)</p>
+					<input
+						type="text"
+						name="a3street"
+						placeholder="Street"
+						class="form-control"
+					/>
+					<input type="text" name="a3city" placeholder="City" class="form-control" />
+					<input
+						type="text"
+						name="a3state"
+						placeholder="State"
+						class="form-control"
+					/>
+					<input
+						type="text"
+						name="a3country"
+						placeholder="Country"
+						class="form-control"
+					/>
+					<input type="number" name="a3zip" placeholder="ZIP" class="form-control" />
+					<br />
+					<input type="submit" value="Register" class="btn btn-success" />
+					<a href = "/login" value="Login Page" class="btn btn-info"> Login Page </a>
+				</form>
+				
+			</div>
+		</div>
+
+		<div class="mssg bg-danger">
+			<span id="check"></span>
+		</div>
+	</body>
+</html>

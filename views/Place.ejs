@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%=name%></title>
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+		<style>
+			.far {
+				font-size: 18px;
+			}
+		</style>
+		<script type="text/javascript">
+			$(document).ready(() => {
+				$('#form').submit((event) => {
+					event.preventDefault()
+
+					$.ajax({
+						type: 'POST',
+						url: '/',
+						data: $('#form').serialize(),
+						dataType: 'text',
+						success: (response) => {
+							$('#form')[0].reset()
+							document.getElementById('check').textContent = response
+
+							setTimeout(() => {
+								document.getElementById('check').textContent = ''
+							}, 3000)
+						},
+						error: () => {},
+					})
+				})
+			})
+		</script>
+	</head>
+
+	<body>
+		<div class="col-lg-6 col-lg-offset-3">
+			<div>
+				<center><h2><%=name%></h2></center>
+			</div>
+			
+
+			<div>
+				<h2>Photos</h2>
+				<div>
+					<table class="table table-hover">
+						<colgroup> <col class="col-xs-4"> <col class="col-xs-4"><col class="col-xs-4"> </colgroup>
+						<%for (var photo in photos){%>
+							<tr>
+								<td>
+									<b>Place: </b> <a href="/place/<%=placeId%>"
+										><%=photos[photo][1]%></a> <br>
+									<b>Author: </b> <a href="/profile/<%=photos[photo][5]%>"
+										><%=photos[photo][4]%></a> <br>
+									<b>Date Taken: </b><%=new Date(photos[photo][3]).toLocaleString()%>
+									<br>
+									<form action=<%='/reaction/' + photos[photo][0]%> id=<%='reaction-form-' + photos[photo][0]%> method="POST">
+										<div style="line-height: 1.75em;">
+											<div>
+												<i class="far fa-thumbs-up"></i> <b>Likes</b>: <%=(reactions[photo][2] == null ? 0 : reactions[photo][2] )%> 
+												<button type="submit" name="reaction" value="like" class="btn btn-info btn-xs">Like</button>
+											</div>
+											<div>
+												<i class="far fa-heart"></i> <b>Loves</b>: <%=(reactions[photo][3] == null ? 0 : reactions[photo][3] )%>
+												<button type="submit" name="reaction" value="love" class="btn btn-info btn-xs">Love</button>
+											</div>
+											<div>
+												<i class="far fa-grin-squint"></i> <b>Laughs</b>: <%=(reactions[photo][4] == null ? 0 : reactions[photo][4] )%>
+												<button type="submit" name="reaction" value="laugh" class="btn btn-info btn-xs">Laugh</button>
+											</div>
+											<div>
+												<i class="far fa-thumbs-down"></i> <b>Dislikes</b>: <%=(reactions[photo][5] == null ? 0 : reactions[photo][5] )%>
+												<button type="submit" name="reaction" value="dislike" class="btn btn-info btn-xs">Dislike</button>
+											</div>
+											<div>
+												<i class="far fa-angry"></i> <b>Angries</b>: <%=(reactions[photo][6] == null ? 0 : reactions[photo][6] )%>
+												<button type="submit" name="reaction" value="angry" class="btn btn-info btn-xs">Angry</button>
+											</div>
+										</div>
+									</form>
+									<br />
+								</td>
+								<td>
+									<img
+										style="max-height: 200px; max-width: 200px"
+										src="/uploads/<%=photos[photo][2]%>"
+									/>
+								</td>
+								<td>
+									<b>Comments</b>
+									<br>
+									<table class="table">
+										<%for (var comment in comments[photo]){%>
+											<tr>
+												<td><%=comments[photo][comment][2]%> --<i><a href="/profile/<%=comments[photo][comment][4]%>"
+													><%=comments[photo][comment][3]%></a></i></td>
+											</tr>
+										<%}%>
+										<tr>
+											<td>
+												<form action=<%='/comment/' + photos[photo][0]%> id=<%='comment-form-' + photos[photo][0]%> method="POST" class="form-inline">
+													<input
+														type="text"
+														name="comment"
+														placeholder="Add a comment..."
+														required=""
+														class="form-control"
+													/>
+													<input type="submit" value="Submit" class="btn btn-success" />
+												</form>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black;">
+			<div>
+				<h2>Reviews</h2>
+				<div>
+					<table class="table table-hover">
+						<%for (var review in reviews){%>
+							<tr>
+								<td>
+									<b>Place: </b>  <a href="/place/<%=placeId%>"
+										><%=reviews[review][0]%></a> <br>
+									<b>Author: </b> <a href="/profile/<%=reviews[review][3]%>"
+										><%=reviews[review][2]%></a> <br>
+									<b>Review: </b>"<%=reviews[review][1]%>"
+								</td>
+							</tr>
+						<%}%>
+					</table>
+				</div>
+
+				<div><h3>Leave a review!</h3></div>
+
+				<form action=<%='/review/' + placeId%> id="review-form" method="POST">
+					<input 
+						type="text"
+						name="review"
+						placeholder="When I visited..."
+						required=""
+						class="form-control"
+					/><br />
+					<input type="submit" value="Leave Review" class="btn btn-success" />
+				</form>
+			</div>
+			<hr style="border-top: 1px solid black;">
+
+			<div>
+				<div>
+					<h2>Transportation Info</h2>
+					<table class="table table-hover">
+						<%for (var trans in transpo){%>
+							<tr>
+								<td><b><%=transpo[trans]%></b></td>
+							</tr>
+						<%}%>
+					</table>
+				</div>
+				<p>Add new mode of travel:</p>
+				<div>
+					<form action=<%='/transpo/' + placeId%> id="transport-form" method="POST">
+						<input
+							type="text"
+							name="transpo"
+							placeholder="To get around..."
+							required=""
+							class="form-control"
+						/><br />
+						<input type="submit" value="Add mode of travel" class="btn btn-success" />
+					</form>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black;">
+
+			<div>
+				<h2>Wish list</h2>
+				<p>These users want to visit <%=name%>.</p>
+				<table class="table table-hover">
+					<%for (var user in wishlist){%>
+						<tr>
+							<td><b><a href="/profile/<%=wishlist[user][1]%>"
+								><%=wishlist[user][0]%></a></b></td>
+						</tr>
+					<%}%>
+				</table>
+			</div>
+
+			<div>
+				<form action=<%='/wishlist/' + placeId%> id="wishlist-form" method="POST">
+					<input type="submit" value="Add to my wishlist" class="btn btn-info" />
+				</form>
+			</div>
+			<hr style="border-top: 1px solid black;">
+
+			<div>
+				<h2>Travel history</h2>
+				<table class="table table-hover">
+					<%for (var visit in travelHistory){%>
+						<tr>
+							<td>
+								<b>Visitor: </b><a href="/profile/<%=travelHistory[visit][3]%>"
+									> <%=travelHistory[visit][0]%></a><br />
+								<b>Start date: </b> <%=new Date(travelHistory[visit][1]).toLocaleDateString()%><br />
+								<b>End date: </b> <%=new Date(travelHistory[visit][2]).toLocaleDateString()%><br />
+							</td>
+						</tr>
+					<%}%>
+				</table>
+			</div>
+
+			<div><h3>Log your visit!</h3></div>
+
+			<form action=<%='/visit/' + placeId%> id="visit-form" method="POST">
+				<p>Enter dates as dd-MON-year, e.g. 09-SEP-2019.</p>
+				<input
+					type="text"
+					name="start"
+					placeholder="Start date"
+					required=""
+					class="form-control"
+				/>
+				<input
+					type="text"
+					name="end"
+					placeholder="End date"
+					required=""
+					class="form-control"
+				/>
+				<br />
+				<input type="submit" value="Log Visit" class="btn btn-success" />
+				<a href="/allplaces" value="Go to all-places" class="btn btn-info" >Go to all-places </a>
+			</form>
+			<hr style="border-top: 1px solid black;">
+		</div>
+	</body>
+</html>

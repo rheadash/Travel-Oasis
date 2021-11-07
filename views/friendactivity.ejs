@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Friend activity</title>
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="./css/main.css" />
+
+		<script type="text/javascript">
+			$(document).ready(() => {
+				$('#form').submit((event) => {
+					event.preventDefault()
+
+					$.ajax({
+						type: 'POST',
+						url: '/friendactivity',
+						data: $('#form').serialize(),
+						dataType: 'json',
+						success: (response) => {
+							alert("a");
+							console.log(response.Success);
+							$('#form')[0].reset()
+							window.location.href = '/allplaces/' + response.Success
+							document.getElementById('check').innerHTML = response.Success
+							//ADD THIS CODE
+							setTimeout(() => {
+								document.getElementById('check').innerHTML = ''
+							}, 3000)
+							if (response.Success == 'Success!') {
+								document.getElementById('aa').click()
+							}
+						},
+						error: () => {},
+					})
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div class="col-md-4 col-md-offset-4">
+			<div>
+				<center>
+					<h1>Friend Activity</h1>
+					</br>
+					<a href="/addfriend/<%=userId%>" value="Go to add-friend" class="btn btn-info" >Add a Friend</a>
+					<a href="/profile/<%=userId%>" value="Go to all-places" class="btn btn-info" >Profile</a>
+				</center>
+				
+			</div>
+			<div>
+				<h2>Recent Friend Reviews</h2>
+				<div>
+					<h3>Friend: <%= friend_one[0] %> </h3>
+					<table class="table table-hover">
+						<%for (var review in reviews_one){%>
+						<tr>
+							<td>
+								<b>Place: </b>
+								<a href="/place/<%=reviews_one[review][2]%>"
+									><%=reviews_one[review][0]%></a
+								>
+								<br />
+								<b>Review: </b>"<%=reviews_one[review][1]%>"
+							</td>
+						</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black" />
+
+			<div>
+				<h2>Recent Friend Reactions</h2>
+				<div>
+					<h3>Friend: <%= friend_two[0] %> </h3>
+					<table class="table table-hover">
+						<colgroup>
+							<col class="col-xs-4" />
+							<col class="col-xs-4" />
+							<col class="col-xs-4" />
+						</colgroup>
+						<%for (var photo in photos){%>
+						<tr>
+							<td>
+								<b>Place: </b>
+								<a href="/place/<%=photos[photo][4]%>"
+									><%=photos[photo][1]%></a
+								>
+								<br />
+								<b>Date Taken: </b><%=new
+								Date(photos[photo][3]).toLocaleString()%>
+								<br />
+								<div style="line-height: 1.75em">
+									<div>
+										<i class="far fa-thumbs-up"></i>
+										<b>Likes</b>: <%=(reactions[photo][2] ==
+										null ? 0 : reactions[photo][2] )%>
+									</div>
+									<div>
+										<i class="far fa-heart"></i>
+										<b>Loves</b>: <%=(reactions[photo][3] ==
+										null ? 0 : reactions[photo][3] )%>
+									</div>
+									<div>
+										<i class="far fa-grin-squint"></i>
+										<b>Laughs</b>: <%=(reactions[photo][4]
+										== null ? 0 : reactions[photo][4] )%>
+									</div>
+									<div>
+										<i class="far fa-thumbs-down"></i>
+										<b>Dislikes</b>: <%=(reactions[photo][5]
+										== null ? 0 : reactions[photo][5] )%>
+									</div>
+									<div>
+										<i class="far fa-angry"></i>
+										<b>Angries</b>: <%=(reactions[photo][6]
+										== null ? 0 : reactions[photo][6] )%>
+									</div>
+								</div>
+								<br />
+							</td>
+							<td>
+								<img
+									style="max-height: 200px; max-width: 200px"
+									src="/uploads/<%=photos[photo][2]%>"
+								/>
+							</td>
+			
+						</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<div class="mssg bg-danger">
+				<span id="check"></span>
+			</div>
+
+		</div>
+	</body>
+</html>

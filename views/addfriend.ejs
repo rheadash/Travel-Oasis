@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Add a friend</title>
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="./css/main.css" />
+
+		<script type="text/javascript">
+			$(document).ready(() => {
+				$('#form').submit((event) => {
+					event.preventDefault()
+
+					$.ajax({
+						type: 'POST',
+						url: '/addfriend',
+						data: $('#form').serialize(),
+						dataType: 'json',
+						success: (response) => {
+							alert("a");
+							console.log(response.Success);
+							$('#form')[0].reset()
+							window.location.href = '/allplaces/' + response.Success
+							document.getElementById('check').innerHTML = response.Success
+							//ADD THIS CODE
+							setTimeout(() => {
+								document.getElementById('check').innerHTML = ''
+							}, 3000)
+							if (response.Success == 'Success!') {
+								document.getElementById('aa').click()
+							}
+						},
+						error: () => {},
+					})
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div class="col-md-4 col-md-offset-4">
+			<div>
+				<p><h2>Add a friend</h2></p>
+			</div>
+			<div class="form-group">
+                <form action = "/addfriend/<%=currUserID%>" id="add-form" method="POST">
+                    <p>Add a friend by their E-mail</p>
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder="Input Friend's Email"
+                        required=""
+                        class="form-control"
+                    />
+                    <br />
+                    <input type="submit" value="Add Friend" class="btn btn-success" />
+                </form>
+				
+			</div>
+			<div class="mssg bg-danger">
+				<span id="check"></span>
+			</div>
+
+		</div>
+	</body>
+</html>

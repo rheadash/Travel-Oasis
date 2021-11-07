@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Profile</title>
+	
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+		/>
+		<style>
+			.far {
+				font-size: 18px;
+			}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(() => {
+				$('#form').submit((event) => {
+					event.preventDefault()
+
+					$.ajax({
+						type: 'POST',
+						url: '/',
+						data: $('#form').serialize(),
+						dataType: 'text',
+						success: (response) => {
+							$('#form')[0].reset()
+							document.getElementById('check').textContent =
+								response
+
+							setTimeout(() => {
+								document.getElementById('check').textContent =
+									''
+							}, 3000)
+						},
+						error: () => {},
+					})
+				})
+			})
+		</script>
+	</head>
+
+	<body>
+		<div class="col-lg-6 col-lg-offset-3">
+			<div>
+				<h2>Profile Detail</h2>
+			</div>
+			<div>
+				<center>
+					<a href="/allplaces" value="Go to all-places" class="btn btn-info" >Go to all-places </a>
+					<a href="/friendactivity/<%=userId%>" value="Go to add-friend" class="btn btn-info" >Friend Activity</a>
+
+				</center>
+			
+			</br>
+			</div>
+			<div>
+				<center>
+					<table class="table table-hover">
+						<tr>
+							<td><b>Name</b></td>
+							<td><%= name %></td>
+						</tr>
+						<tr>
+							<td><b>Email</b></td>
+							<td><%= email %></td>
+						</tr>
+					</table>
+				</center>
+
+				<h3>Addresses</h3>
+				<center>
+					<table class="table table-hover">
+						<tr>
+							<th>Street</th>
+							<th>City</th>
+							<th>State</th>
+							<th>Country</th>
+							<th>ZIP (optional)</th>
+						</tr>
+						<%for (var address in addresses){%>
+
+						<tr>
+							<td><%=addresses[address][1]%></td>
+							<td><%=addresses[address][2]%></td>
+							<td><%=addresses[address][3]%></td>
+							<td><%=addresses[address][4]%></td>
+							<td><%=addresses[address][5]%></td>
+						</tr>
+						<%}%>
+					</table>
+				</center>
+			</div>
+			<hr style="border-top: 1px solid black" />
+
+			<div>
+				<h2>Photo history</h2>
+				<div>
+					<table class="table table-hover">
+						<colgroup>
+							<col class="col-xs-4" />
+							<col class="col-xs-4" />
+							<col class="col-xs-4" />
+						</colgroup>
+						<%for (var photo in photos){%>
+						<tr>
+							<td>
+								<b>Place: </b>
+								<a href="/place/<%=photos[photo][4]%>"
+									><%=photos[photo][1]%></a
+								>
+								<br />
+								<b>Date Taken: </b><%=new
+								Date(photos[photo][3]).toLocaleString()%>
+								<br />
+								<div style="line-height: 1.75em">
+									<div>
+										<i class="far fa-thumbs-up"></i>
+										<b>Likes</b>: <%=(reactions[photo][2] ==
+										null ? 0 : reactions[photo][2] )%>
+									</div>
+									<div>
+										<i class="far fa-heart"></i>
+										<b>Loves</b>: <%=(reactions[photo][3] ==
+										null ? 0 : reactions[photo][3] )%>
+									</div>
+									<div>
+										<i class="far fa-grin-squint"></i>
+										<b>Laughs</b>: <%=(reactions[photo][4]
+										== null ? 0 : reactions[photo][4] )%>
+									</div>
+									<div>
+										<i class="far fa-thumbs-down"></i>
+										<b>Dislikes</b>: <%=(reactions[photo][5]
+										== null ? 0 : reactions[photo][5] )%>
+									</div>
+									<div>
+										<i class="far fa-angry"></i>
+										<b>Angries</b>: <%=(reactions[photo][6]
+										== null ? 0 : reactions[photo][6] )%>
+									</div>
+								</div>
+								<br />
+							</td>
+							<td>
+								<img
+									style="max-height: 200px; max-width: 200px"
+									src="/uploads/<%=photos[photo][2]%>"
+								/>
+							</td>
+							<td>
+								<b>Comments</b>
+								<br />
+								<table class="table">
+									<%for (var comment in comments[photo]){%>
+									<tr>
+										<td>
+											<%=comments[photo][comment][2]%>
+											--<i
+												><a href="/profile/<%=comments[photo][comment][4]%>"
+													><%=comments[photo][comment][3]%></a></i
+											>
+										</td>
+									</tr>
+									<%}%>
+								</table>
+							</td>
+						</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black" />
+
+			<div>
+				<h2>Review history</h2>
+				<div>
+					<table class="table table-hover">
+						<%for (var review in reviews){%>
+						<tr>
+							<td>
+								<b>Place: </b>
+								<a href="/place/<%=reviews[review][2]%>"
+									><%=reviews[review][0]%></a
+								>
+								<br />
+								<b>Review: </b>"<%=reviews[review][1]%>"
+							</td>
+						</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black" />
+
+			<div>
+				<h2>Wishlist</h2>
+				<div>
+					<table class="table table-hover">
+						<%for (var wish in wishlist){%>
+						<tr>
+							<td>
+								<b>Place: </b> <a href="/place/<%=wishlist[wish][1]%>"
+									><%=wishlist[wish][0]%></a>
+								<br />
+							</td>
+						</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black" />
+
+			<div>
+				<h2>Travel history</h2>
+				<div>
+					<table class="table table-hover">
+						<%for (var visit in travelHistory){%>
+						<tr>
+							<td>
+								<b>Place: </b>
+								<a href="/place/<%=travelHistory[visit][3]%>"
+									><%=travelHistory[visit][0]%></a><br />
+								<b>Start date: </b> <%=new
+								Date(travelHistory[visit][1]).toLocaleDateString()%><br />
+								<b>End date: </b> <%=new
+								Date(travelHistory[visit][2]).toLocaleDateString()%><br />
+							</td>
+						</tr>
+						<%}%>
+					</table>
+				</div>
+			</div>
+			<hr style="border-top: 1px solid black" />
+			<h3><a href="/logout">Log out</a></h3>
+			<hr style="border-top: 1px solid black" />
+		</div>
+		
+	</body>
+</html>
